@@ -27,7 +27,7 @@ register(
 	"2015",
 
 	#menupath
-	"Hello World",
+	"Image Search",
 
 	#imagetypes (use * for all, leave blank for none)
 	"",
@@ -42,6 +42,6 @@ register(
 	start,
 
 	#this can be included this way or the menu value can be directly prepended to the menupath
-	menu = "<Toolbox>/Hello/")
+	menu = "<Toolbox>/Shutterstock Images/")
 
 main()
