@@ -87,8 +87,10 @@ class ShutterStockGUI:
 			return imageList[image]['assets']['preview_1500']['url']
 
 		#make dir before downloading
-		os.mkdir('/home/'+ getpass.getuser() + '/Desktop/tempPics')
 		directory = '/home/'+ getpass.getuser() + '/Desktop/tempPics'
+		if not os.path.exists(directory):
+    		os.makedir(directory)
+		
 		for img in range(len(imageList)):
 			url = getPreview(imageList, img)
 			urllib.request.urlretrieve(url, directory+'/img'+str(img)+'.jpg')
