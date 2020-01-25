@@ -9,25 +9,25 @@ def start():
 	return
 
 register(
-	"helloWorldPlugin",
+	"ShutterStockIntegrationPlug",
 
 	#blurb
-	"Saying Hello World",
+	"Allows to search the ShutterStock",
 
 	#help
-	"Saying Hello to the World",
+	"What do you need help for??",
 
 	#author
-	"William Crandell <william@crandell.ws>",
+	"The Big Brain Brotherhood",
 
 	#copyright
-	"William Crandell <william@crandell.ws>",
+	"The Big Brain Brotherhood 2020",
 
 	#date
-	"2015",
+	"2020",
 
 	#menupath
-	"Hello World",
+	"Add shutterstock Image",
 
 	#imagetypes (use * for all, leave blank for none)
 	"",
@@ -42,6 +42,6 @@ register(
 	start,
 
 	#this can be included this way or the menu value can be directly prepended to the menupath
-	menu = "<Toolbox>/Hello/")
+	menu = "<Toolbox>/shutterstock/")
 
 main()
