@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import ImageTk, Image
 import subprocess
+import requests
 
 ss_gui = None
 new_search_bool = True
@@ -65,16 +66,38 @@ class ShutterStockGUI:
 		scrollbar.pack(side="right", fill="y")
 		tk.Button(master, text="Import to GIMP", command=lambda: open_image_gimp("conuhacks.png")).pack(side="top")
 
-	def search(self, *args):
-		text_to_search = self.entry.get()
-		print(text_to_search)
+	def search(self):
+		print(self.entry.get())
+		query = self.entry.get()
+		#api handling
+		headers = {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			'Authorization': 'Basic ZTYzSGxneHlXTFpVM3BtcXBqcVpWU0FLWUZhTW1OODQ6bThGTEZiUTJFdEw4cVdobg=='
+		}
+
+		url = "https://api.shutterstock.com/v2/images/search?query="
+		# response is in JSON format
+		response = requests.request("GET", url+query + '&per_page=' + per_page + '&page=' + current_page, headers=headers)
+		imageList = json.loads(response.text)['data']
+
+		def getPreview(imageList, image):
+			return imageList[image]['assets']['preview']['url']
+
+		def getPreview_1500(imageList, image):
+			return imageList[image]['assets']['preview_1500']['url']
+
+		#make dir before downloading
+		os.mkdir('/home/'+ getpass.getuser() + '/Desktop/tempPics')
+		directory = '/home/'+ getpass.getuser() + '/Desktop/tempPics'
+		for img in range(len(imageList)):
+			url = getPreview(imageList, img)
+			urllib.request.urlretrieve(url, directory+'/img'+str(img)+'.jpg')
 
 	def clear_search_bar(self, *args):
 		global new_search_bool
 		if(new_search_bool):
 			self.entry.delete(0, END)
 			new_search_bool = False
-	
 
 root = tk.Tk()
 ss_gui = ShutterStockGUI(root)
