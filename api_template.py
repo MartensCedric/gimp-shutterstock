@@ -3,7 +3,7 @@ import requests
 
 
 # the search box needs to fill this value
-query = ""
+query = input('query: ')
 
 headers = {
   'Content-Type': 'application/x-www-form-urlencoded',
