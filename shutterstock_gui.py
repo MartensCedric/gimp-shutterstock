@@ -3,7 +3,7 @@ from tkinter import *
 class MyFirstGUI:
 	def __init__(self, master):
 		self.master = master
-		master.title("BIG BRAIN TIME")
+		master.title("Shutter Stock Image Search")
 
 		self.entry = Entry(master)
 		self.entry.grid(row=0, column=1)
