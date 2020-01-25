@@ -4,10 +4,6 @@ from tkinter import ttk
 import subprocess
 
 ss_gui = None
-
-def search():
-	print('something')
-
 def open_image(path):
 	ss_gui.master.quit
 	subprocess.Popen("gimp {}".format(path).split(), stdout=subprocess.PIPE).communicate()
@@ -25,8 +21,10 @@ class ShutterStockGUI:
 
 		master.geometry("800x800")
 		container = ttk.Frame(master)
-		tk.Button(master, text="Search", command=search).pack(side="top")
-		tk.Entry(master).pack(fill=tk.X)
+		
+		label = tk.Button(master, text="Search", command=self.search).pack(side="top")
+		self.entry = tk.Entry(master)
+		self.entry.pack(fill=tk.X)
 
 		canvas = tk.Canvas(container)
 		scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
@@ -50,6 +48,10 @@ class ShutterStockGUI:
 		scrollbar.pack(side="right", fill="y")
 		tk.Button(master, text="Import to GIMP", command= lambda : open_image("conuhacks.png")).pack(side="top")
 
+	def search(self):
+		print(self.entry.get())
+
 root = tk.Tk()
 ss_gui = ShutterStockGUI(root)
+
 root.mainloop()
