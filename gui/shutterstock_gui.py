@@ -61,7 +61,7 @@ class ShutterStockGUI:
 				search_res = SearchResult("conuhacks.png")
 				label.bind("<Button-1>", lambda x : search_res.open_image())
 
-		container.pack(fill=tk.BOTH)
+		container.pack(fill=tk.BOTH, expand=True)
 		canvas.pack(side="left", fill=tk.BOTH, expand=True)
 		scrollbar.pack(side="right", fill="y")
 		tk.Button(master, text="Import to GIMP", command= lambda : open_image_gimp("conuhacks.png")).pack(side="top")
