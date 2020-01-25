@@ -4,7 +4,6 @@ from tkinter import ttk
 
 class ShutterStockGUI:
 	def __init__(self, master):
-		self.master = master
 		master.title("Shutter Stock Image Search")
 
 		#self.entry = Entry(master)
@@ -13,11 +12,11 @@ class ShutterStockGUI:
 		#self.label = Button(master, text="Search")
 		#self.label.grid(row=0, column=2)
 
-		#Button(master, text="Search").grid(row=0, column=0)
-		#Entry(master).grid(row=0, column=1)
-
 		master.geometry("800x800")
 		container = ttk.Frame(master)
+		tk.Label(master, text="Search", bg="red", fg="white").pack(side="top")
+		tk.Entry(master).pack(fill=tk.X)
+
 		canvas = tk.Canvas(container)
 		scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
 		scrollable_frame = ttk.Frame(canvas)
