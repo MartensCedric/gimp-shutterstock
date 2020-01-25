@@ -1,6 +1,7 @@
 from tkinter import *
 import tkinter as tk
 from tkinter import ttk
+from PIL import ImageTk, Image
 import subprocess
 
 ss_gui = None
@@ -47,6 +48,13 @@ class ShutterStockGUI:
 		canvas.pack(side="left", fill="both", expand=True)
 		scrollbar.pack(side="right", fill="y")
 		tk.Button(master, text="Import to GIMP", command= lambda : open_image("conuhacks.png")).pack(side="top")
+		image = Image.open('conuhacks.png')
+		image = image.resize((50, 50), Image.ANTIALIAS)
+		photo = ImageTk.PhotoImage(image)
+		label = tk.Label(root, image=photo)
+		label.img = photo  # this line is not always needed, but include it anyway to prevent bugs
+		label.pack()
+		#tk.Button(master, image=PhotoImage(file=image)).pack(side="top")
 
 	def search(self):
 		print(self.entry.get())
