@@ -3,6 +3,7 @@ import requests
 
 
 # the search box needs to fill this value
+# remove the input() function when implementing, it's there just for console testing purposes
 query = input('query: ')
 
 headers = {
