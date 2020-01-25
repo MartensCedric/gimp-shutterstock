@@ -27,7 +27,13 @@ class ShutterStockGUI:
 
 		string_to_search = StringVar()
 
-		label = tk.Button(master, text="Big Brain Brotherhood Shutterstock Image Search", command=self.search).pack(side="top")
+		top_image = Image.open('gui/title.jpg')
+		top_photo = ImageTk.PhotoImage(top_image)
+		top_label = tk.Label(master, image=top_photo)
+		#load = Image.open("gui/title.jpg")
+		#render = ImageTk.PhotoImage(load)
+		#img = tk.Label(master, image=render)
+		#img.place(x = 0, y = 0)
 
 		self.entry = tk.Entry(master, textvariable=string_to_search)
 		self.entry.insert(END, 'Click here to search for an image...')
@@ -69,7 +75,7 @@ class ShutterStockGUI:
 
 	def search(self, *args):
 		text_to_search = self.entry.get()
-		print(text_to_search)
+		#print(text_to_search)
 
 	def clear_search_bar(self, *args):
 		global new_search_bool
