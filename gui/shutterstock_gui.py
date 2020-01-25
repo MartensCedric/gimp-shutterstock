@@ -13,6 +13,11 @@ import os
 ss_gui = None
 new_search_bool = True
 
+# make dir before downloading
+directory = '~/.gimp-2.8/plug-ins/gui/cache'
+if not os.path.exists(directory):
+	os.makedir(directory)
+
 def open_image_gimp(path):
 	ss_gui.master.destroy()
 	subprocess.Popen("gimp {}".format(path).split(), stdout=subprocess.PIPE).communicate()
@@ -92,11 +97,6 @@ class ShutterStockGUI:
 
 		def getPreview_1500(imageList, image):
 			return imageList[image]['assets']['preview_1500']['url']
-
-		#make dir before downloading
-		directory = '/home/'+ getpass.getuser() + '/Desktop/tempPics'
-		if not os.path.exists(directory):
-    		os.makedir(directory)
 		
 		for img in range(len(imageList)):
 			url = getPreview(imageList, img)
