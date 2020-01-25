@@ -1,6 +1,13 @@
 from tkinter import *
 import tkinter as tk
 from tkinter import ttk
+import subprocess
+
+def open_image(path):
+	process = subprocess.Popen("gimp {}".format(path).split(), stdout=subprocess.PIPE)
+	output, error = process.communicate()
+	print(output)
+	print(error)
 
 class ShutterStockGUI:
 	def __init__(self, master):
@@ -39,6 +46,7 @@ class ShutterStockGUI:
 		container.pack()
 		canvas.pack(side="left", fill="both", expand=True)
 		scrollbar.pack(side="right", fill="y")
+		tk.Button(master, text="Import to GIMP", command= lambda : open_image("conuhacks.png")).pack(side="top")
 
 	def search(self):
 		print(self.entry.get())
