@@ -48,7 +48,8 @@ class ShutterStockGUI:
 		tk.Button(master, text="Import to GIMP", command= lambda : open_image("conuhacks.png")).pack(side="top")
 
 	def search(self, *args):
-		print(self.entry.get())
+		text_to_search = self.entry.get()
+		print(text_to_search)
 	
 	
 
