@@ -1,5 +1,8 @@
 from tkinter import *
 
+def search():
+	print('Now stealing your precious data.')
+
 class MyFirstGUI:
 	def __init__(self, master):
 		self.master = master
@@ -8,11 +11,10 @@ class MyFirstGUI:
 		self.entry = Entry(master)
 		self.entry.grid(row=0, column=1)
 
-		self.label = Button(master, text="Search")
+		self.label = Button(master, text="Search", command=search)
 		self.label.grid(row=0, column=2)
 
-	def something(self):
-		print('something')
+
 
 root = Tk()
 my_gui = MyFirstGUI(root)
