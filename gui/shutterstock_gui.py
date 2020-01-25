@@ -2,6 +2,9 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 
+def search():
+	print("stealing yo data and yo wife")
+
 class ShutterStockGUI:
 	def __init__(self, master):
 		master.title("Shutter Stock Image Search")
@@ -14,7 +17,7 @@ class ShutterStockGUI:
 
 		master.geometry("800x800")
 		container = ttk.Frame(master)
-		tk.Label(master, text="Search", bg="red", fg="white").pack(side="top")
+		tk.Button(master, text="Search", command=search).pack(side="top")
 		tk.Entry(master).pack(fill=tk.X)
 
 		canvas = tk.Canvas(container)
