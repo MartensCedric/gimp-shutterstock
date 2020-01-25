@@ -6,9 +6,16 @@ import subprocess
 import time
 
 ss_gui = None
-def open_image(path):
-	ss_gui.master.quit
+def open_image_gimp(path):
+	#ss_gui.master.quit
 	subprocess.Popen("gimp {}".format(path).split(), stdout=subprocess.PIPE).communicate()
+
+class SearchResult():
+	def __init__(self, path):
+		self.path = path
+
+	def open_image(self):
+		open_image_gimp(self.path)
 
 class ShutterStockGUI:
 	def __init__(self, master):
@@ -41,25 +48,24 @@ class ShutterStockGUI:
 
 		for r in range(50):
 			for c in range(4):
-				ttk.Button(scrollable_frame, text="memes").grid(row=r, column=c)
+				image = Image.open('conuhacks.png')
+				image = image.resize((100, 100), Image.ANTIALIAS)
+				photo = ImageTk.PhotoImage(image)
+				label = tk.Label(scrollable_frame, image=photo)
+				label.img = photo  # this line is not always needed, but include it anyway to prevent bugs
+				label.grid(row=r, column=c)
+				search_res = SearchResult("conuhacks.png")
+				label.bind("<Button-1>", lambda x : search_res.open_image())
 
 		container.pack()
 		canvas.pack(side="left", fill="both", expand=True)
 		scrollbar.pack(side="right", fill="y")
-		tk.Button(master, text="Import to GIMP", command= lambda : open_image("conuhacks.png")).pack(side="top")
-		image = Image.open('conuhacks.png')
-		image = image.resize((50, 50), Image.ANTIALIAS)
-		photo = ImageTk.PhotoImage(image)
-		label = tk.Label(root, image=photo)
-		label.img = photo  # this line is not always needed, but include it anyway to prevent bugs
-		label.pack()
+		tk.Button(master, text="Import to GIMP", command= lambda : open_image_gimp("conuhacks.png")).pack(side="top")
 		#tk.Button(master, image=PhotoImage(file=image)).pack(side="top")
 
 	def search(self, *args):
 		text_to_search = self.entry.get()
 		print(text_to_search)
-	
-	
 
 root = tk.Tk()
 ss_gui = ShutterStockGUI(root)
