@@ -2,9 +2,6 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 
-def search():
-	print("stealing yo data and yo wife")
-
 class ShutterStockGUI:
 	def __init__(self, master):
 		master.title("Shutter Stock Image Search")
@@ -17,8 +14,10 @@ class ShutterStockGUI:
 
 		master.geometry("800x800")
 		container = ttk.Frame(master)
-		tk.Button(master, text="Search", command=search).pack(side="top")
-		tk.Entry(master).pack(fill=tk.X)
+		
+		label = tk.Button(master, text="Search", command=self.search).pack(side="top")
+		self.entry = tk.Entry(master)
+		self.entry.pack(fill=tk.X)
 
 		canvas = tk.Canvas(container)
 		scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
@@ -42,8 +41,9 @@ class ShutterStockGUI:
 		scrollbar.pack(side="right", fill="y")
 
 	def search(self):
-		print('something')
+		print(self.entry.get())
 
 root = tk.Tk()
 ss_gui = ShutterStockGUI(root)
+
 root.mainloop()
