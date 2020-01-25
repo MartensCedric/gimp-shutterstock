@@ -2,6 +2,7 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 import subprocess
+import time
 
 ss_gui = None
 def open_image(path):
@@ -13,18 +14,16 @@ class ShutterStockGUI:
 		self.master = master
 		master.title("Shutter Stock Image Search")
 
-		#self.entry = Entry(master)
-		#self.entry.grid(row=0, column=1)
-
-		#self.label = Button(master, text="Search")
-		#self.label.grid(row=0, column=2)
-
 		master.geometry("800x800")
 		container = ttk.Frame(master)
-		
+
+		string_to_search = StringVar()
+
 		label = tk.Button(master, text="Search", command=self.search).pack(side="top")
-		self.entry = tk.Entry(master)
+		self.entry = tk.Entry(master, textvariable=string_to_search)
 		self.entry.pack(fill=tk.X)
+		
+		string_to_search.trace("w", self.search)
 
 		canvas = tk.Canvas(container)
 		scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
@@ -48,8 +47,10 @@ class ShutterStockGUI:
 		scrollbar.pack(side="right", fill="y")
 		tk.Button(master, text="Import to GIMP", command= lambda : open_image("conuhacks.png")).pack(side="top")
 
-	def search(self):
+	def search(self, *args):
 		print(self.entry.get())
+	
+	
 
 root = tk.Tk()
 ss_gui = ShutterStockGUI(root)
