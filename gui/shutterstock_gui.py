@@ -3,12 +3,23 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import ImageTk, Image
 import subprocess
+import requests
+import json
+import urllib.request
+import getpass
+import os
+
 
 ss_gui = None
 new_search_bool = True
 
+# make dir before downloading
+directory = '~/.gimp-2.8/plug-ins/gui/cache'
+if not os.path.exists(directory):
+	os.makedir(directory)
+
 def open_image_gimp(path):
-	#ss_gui.master.quit
+	ss_gui.master.destroy()
 	subprocess.Popen("gimp {}".format(path).split(), stdout=subprocess.PIPE).communicate()
 
 class SearchResult():
@@ -27,20 +38,11 @@ class ShutterStockGUI:
 
 		string_to_search = StringVar()
 
-		top_image = Image.open('gui/title.jpg')
-		top_photo = ImageTk.PhotoImage(top_image)
-		top_label = tk.Label(master, image=top_photo)
-		#load = Image.open("gui/title.jpg")
-		#render = ImageTk.PhotoImage(load)
-		#img = tk.Label(master, image=render)
-		#img.place(x = 0, y = 0)
-
 		self.entry = tk.Entry(master, textvariable=string_to_search)
 		self.entry.insert(END, 'Click here to search for an image...')
 		self.entry.bind("<Button-1>", self.clear_search_bar)
 		self.entry.pack(fill=tk.X)
-		
-		
+
 		string_to_search.trace("w", self.search)
 
 		canvas = tk.Canvas(container)
@@ -56,10 +58,10 @@ class ShutterStockGUI:
 		canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
 		canvas.configure(yscrollcommand=scrollbar.set)
 
-		for r in range(50):
-			for c in range(4):
+		for r in range(18):
+			for c in range(2):
 				image = Image.open('conuhacks.png')
-				image = image.resize((100, 100), Image.ANTIALIAS)
+				image = image.resize((390, 390), Image.ANTIALIAS)
 				photo = ImageTk.PhotoImage(image)
 				label = tk.Label(scrollable_frame, image=photo)
 				label.img = photo  # this line is not always needed, but include it anyway to prevent bugs
@@ -67,9 +69,10 @@ class ShutterStockGUI:
 				search_res = SearchResult("conuhacks.png")
 				label.bind("<Button-1>", lambda x : search_res.open_image())
 
-		container.pack()
-		canvas.pack(side="left", fill="both", expand=True)
+		container.pack(fill=tk.BOTH, expand=True)
+		canvas.pack(side="left", fill=tk.BOTH, expand=True)
 		scrollbar.pack(side="right", fill="y")
+
 		tk.Button(master, text="Import to GIMP", command= lambda : open_image_gimp("conuhacks.png")).pack(side="top")
 		#tk.Button(master, image=PhotoImage(file=image)).pack(side="top")
 
@@ -77,14 +80,41 @@ class ShutterStockGUI:
 		text_to_search = self.entry.get()
 		#print(text_to_search)
 
+		tk.Button(master, text="Import to GIMP", command=lambda: open_image_gimp("conuhacks.png")).pack(side="top")
+
+	def search(self):
+		print(self.entry.get())
+		query = self.entry.get()
+		per_page = '12'
+		current_page='1'
+		url = "https://api.shutterstock.com/v2/images/search?query="
+		#api handling
+		headers = {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			'Authorization': 'Basic ZTYzSGxneHlXTFpVM3BtcXBqcVpWU0FLWUZhTW1OODQ6bThGTEZiUTJFdEw4cVdobg=='
+		}
+
+		# response is in JSON format
+		response = requests.request("GET", url+query + '&per_page=' + per_page + '&page=' + current_page, headers=headers)
+		imageList = json.loads(response.text)['data']
+
+		def getPreview(imageList, image):
+			return imageList[image]['assets']['preview']['url']
+
+		def getPreview_1500(imageList, image):
+			return imageList[image]['assets']['preview_1500']['url']
+		
+		for img in range(len(imageList)):
+			url = getPreview(imageList, img)
+			urllib.request.urlretrieve(url, directory+'/img'+str(img)+'.jpg')
+
+
 	def clear_search_bar(self, *args):
 		global new_search_bool
 		if(new_search_bool):
 			self.entry.delete(0, END)
 			new_search_bool = False
-	
 
 root = tk.Tk()
 ss_gui = ShutterStockGUI(root)
-
 root.mainloop()
