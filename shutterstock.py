@@ -5,7 +5,7 @@ import os
 
 
 def start():
-	os.system("python2 ~/.gimp-2.8/plug-ins/shutterstock_gui.py")
+	os.system("python3 ~/.gimp-2.8/plug-ins/shutterstock_gui.py")
 	return
 
 register(

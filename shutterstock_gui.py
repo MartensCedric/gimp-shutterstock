@@ -1,4 +1,4 @@
-from Tkinter import *
+from tkinter import *
 
 class MyFirstGUI:
 	def __init__(self, master):
