@@ -46,10 +46,10 @@ class ShutterStockGUI:
 		canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
 		canvas.configure(yscrollcommand=scrollbar.set)
 
-		for r in range(50):
-			for c in range(4):
+		for r in range(18):
+			for c in range(2):
 				image = Image.open('conuhacks.png')
-				image = image.resize((100, 100), Image.ANTIALIAS)
+				image = image.resize((390, 390), Image.ANTIALIAS)
 				photo = ImageTk.PhotoImage(image)
 				label = tk.Label(scrollable_frame, image=photo)
 				label.img = photo  # this line is not always needed, but include it anyway to prevent bugs
@@ -57,8 +57,8 @@ class ShutterStockGUI:
 				search_res = SearchResult("conuhacks.png")
 				label.bind("<Button-1>", lambda x : search_res.open_image())
 
-		container.pack()
-		canvas.pack(side="left", fill="both", expand=True)
+		container.pack(fill=tk.BOTH)
+		canvas.pack(side="left", fill=tk.BOTH, expand=True)
 		scrollbar.pack(side="right", fill="y")
 		tk.Button(master, text="Import to GIMP", command= lambda : open_image_gimp("conuhacks.png")).pack(side="top")
 		#tk.Button(master, image=PhotoImage(file=image)).pack(side="top")
