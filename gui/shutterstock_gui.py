@@ -39,8 +39,6 @@ class ShutterStockGUI:
 
 		string_to_search = StringVar()
 
-		label = tk.Button(master, text="Big Brain Brotherhood Shutterstock Image Search", command=self.search).pack(side="top")
-
 		self.entry = tk.Entry(master, textvariable=string_to_search)
 		self.entry.insert(END, 'Click here to search for an image...')
 		self.entry.bind("<Button-1>", self.clear_search_bar)
@@ -63,6 +61,14 @@ class ShutterStockGUI:
 		container.pack(fill=tk.BOTH, expand=True)
 		canvas.pack(side="left", fill=tk.BOTH, expand=True)
 		scrollbar.pack(side="right", fill="y")
+
+		tk.Button(master, text="Import to GIMP", command= lambda : open_image_gimp("conuhacks.png")).pack(side="top")
+		#tk.Button(master, image=PhotoImage(file=image)).pack(side="top")
+
+	def search(self, *args):
+		text_to_search = self.entry.get()
+		#print(text_to_search)
+
 		tk.Button(master, text="Import to GIMP", command=lambda: open_image_gimp("conuhacks.png")).pack(side="top")
 
 	def search(self, *args):
@@ -103,6 +109,7 @@ class ShutterStockGUI:
 			label.grid(row=row, column=col)
 			search_res = SearchResult(filename)
 			label.bind("<Button-1>", lambda x: search_res.open_image())
+
 
 
 	def clear_search_bar(self, *args):
