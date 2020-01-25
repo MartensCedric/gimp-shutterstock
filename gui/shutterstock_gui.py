@@ -3,17 +3,18 @@ import tkinter as tk
 from tkinter import ttk
 import subprocess
 
+ss_gui = None
+
 def search():
-	print("stealing yo data and yo wife")
+	print('something')
 
 def open_image(path):
-	process = subprocess.Popen("gimp {}".format(path).split(), stdout=subprocess.PIPE)
-	output, error = process.communicate()
-	print(output)
-	print(error)
+	ss_gui.master.quit
+	subprocess.Popen("gimp {}".format(path).split(), stdout=subprocess.PIPE).communicate()
 
 class ShutterStockGUI:
 	def __init__(self, master):
+		self.master = master
 		master.title("Shutter Stock Image Search")
 
 		#self.entry = Entry(master)
@@ -48,9 +49,6 @@ class ShutterStockGUI:
 		canvas.pack(side="left", fill="both", expand=True)
 		scrollbar.pack(side="right", fill="y")
 		tk.Button(master, text="Import to GIMP", command= lambda : open_image("conuhacks.png")).pack(side="top")
-
-	def search(self):
-		print('something')
 
 root = tk.Tk()
 ss_gui = ShutterStockGUI(root)
