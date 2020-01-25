@@ -8,7 +8,7 @@ ss_gui = None
 new_search_bool = True
 
 def open_image_gimp(path):
-	#ss_gui.master.quit
+	ss_gui.master.destroy()
 	subprocess.Popen("gimp {}".format(path).split(), stdout=subprocess.PIPE).communicate()
 
 class SearchResult():
@@ -33,8 +33,7 @@ class ShutterStockGUI:
 		self.entry.insert(END, 'Click here to search for an image...')
 		self.entry.bind("<Button-1>", self.clear_search_bar)
 		self.entry.pack(fill=tk.X)
-		
-		
+
 		string_to_search.trace("w", self.search)
 
 		canvas = tk.Canvas(container)
@@ -64,8 +63,7 @@ class ShutterStockGUI:
 		container.pack(fill=tk.BOTH, expand=True)
 		canvas.pack(side="left", fill=tk.BOTH, expand=True)
 		scrollbar.pack(side="right", fill="y")
-		tk.Button(master, text="Import to GIMP", command= lambda : open_image_gimp("conuhacks.png")).pack(side="top")
-		#tk.Button(master, image=PhotoImage(file=image)).pack(side="top")
+		tk.Button(master, text="Import to GIMP", command=lambda: open_image_gimp("conuhacks.png")).pack(side="top")
 
 	def search(self, *args):
 		text_to_search = self.entry.get()
@@ -80,5 +78,4 @@ class ShutterStockGUI:
 
 root = tk.Tk()
 ss_gui = ShutterStockGUI(root)
-
 root.mainloop()
