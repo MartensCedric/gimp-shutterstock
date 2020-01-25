@@ -5,7 +5,7 @@ import os
 
 
 def start():
-	os.system("python2 ~/.gimp-2.8/plug-ins/shutterstock_gui.py")
+	os.system("python3 ~/.gimp-2.8/plug-ins/shutterstock_gui.py")
 	return
 
 register(
@@ -27,7 +27,7 @@ register(
 	"2015",
 
 	#menupath
-	"Dank Meme Finder",
+	"Hello World",
 
 	#imagetypes (use * for all, leave blank for none)
 	"",
@@ -42,6 +42,6 @@ register(
 	start,
 
 	#this can be included this way or the menu value can be directly prepended to the menupath
-	menu = "<Toolbox>/Shutterstock Images/")
+	menu = "<Toolbox>/Hello/")
 
 main()

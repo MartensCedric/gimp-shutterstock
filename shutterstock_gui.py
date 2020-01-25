@@ -5,19 +5,16 @@ class MyFirstGUI:
 		self.master = master
 		master.title("BIG BRAIN TIME")
 
-		self.label = Label(master, text="Test")
-		self.label.pack()
+		self.entry = Entry(master)
+		self.entry.grid(row=0, column=1)
 
-		self.greet_button = Button(master, text="Do something", command=self.something)
-		self.greet_button.pack()
-
-		self.close_button = Button(master, text="Close", command=master.quit)
-		self.close_button.pack()
+		self.label = Button(master, text="Search")
+		self.label.grid(row=0, column=2)
 
 	def something(self):
 		print('something')
 
 root = Tk()
 my_gui = MyFirstGUI(root)
-root.geometry("400x400")
+root.geometry("600x600")
 root.mainloop()
