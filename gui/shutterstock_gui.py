@@ -16,7 +16,7 @@ new_search_bool = True
 # make dir before downloading
 directory = '~/.gimp-2.8/plug-ins/gui/cache'
 if not os.path.exists(directory):
-	os.makedir(directory)
+	os.mkdir(directory)
 
 def open_image_gimp(path):
 	ss_gui.master.destroy()
