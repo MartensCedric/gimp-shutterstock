@@ -5,29 +5,29 @@ import os
 
 
 def start():
-	os.system("python3 ~/.gimp-2.8/plug-ins/shutterstock_gui.py")
+	os.system("python2 ~/.gimp-2.8/plug-ins/shutterstock_gui.py")
 	return
 
 register(
-	"ShutterStockIntegrationPlug",
+	"helloWorldPlugin",
 
 	#blurb
-	"Allows to search the ShutterStock",
+	"Saying Hello World",
 
 	#help
-	"What do you need help for??",
+	"Saying Hello to the World",
 
 	#author
-	"The Big Brain Brotherhood",
+	"William Crandell <william@crandell.ws>",
 
 	#copyright
-	"The Big Brain Brotherhood 2020",
+	"William Crandell <william@crandell.ws>",
 
 	#date
-	"2020",
+	"2015",
 
 	#menupath
-	"Add shutterstock Image",
+	"Dank Meme Finder",
 
 	#imagetypes (use * for all, leave blank for none)
 	"",
@@ -42,6 +42,6 @@ register(
 	start,
 
 	#this can be included this way or the menu value can be directly prepended to the menupath
-	menu = "<Toolbox>/shutterstock/")
+	menu = "<Toolbox>/Shutterstock Images/")
 
 main()
