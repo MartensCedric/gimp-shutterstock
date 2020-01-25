@@ -3,7 +3,7 @@ import requests
 
 
 # the search box needs to fill this value
-query = ""
+query = input('query: ')
 
 headers = {
   'Content-Type': 'application/x-www-form-urlencoded',
@@ -13,3 +13,4 @@ headers = {
 url = "https://api.shutterstock.com/v2/images/search?query="
 # response is in JSON format
 response = requests.request("GET", url+query, headers=headers)
+print(response.text)
