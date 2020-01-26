@@ -2,10 +2,11 @@
 
 from gimpfu import *
 import os
+import webbrowser
 
 
 def start():
-	os.system("python3 ~/.gimp-2.8/plug-ins/gui/shutterstock_gui.py")
+	webbrowser.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 	return
 
 register(
