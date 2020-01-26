@@ -11,7 +11,10 @@ import os
 import math
 import threading
 
-from gui.ss_api import getPreview
+try:
+	from gui.ss_api import getPreview
+except:
+	from ss_api import getPreview
 
 ss_gui = None
 new_search_bool = True
@@ -78,7 +81,6 @@ class ShutterStockGUI:
 		canvas.pack(side="left", fill=tk.BOTH, expand=True)
 		scrollbar.pack(side="right", fill="y")
 
-		tk.Button(self.master, text="Import to GIMP", command=lambda: open_image_gimp("conuhacks.png")).pack(side="top")
 		tk.Button(self.master, text="Previous", command=self.previous_search).pack(side="left")
 		tk.Button(self.master, text="Next", command=self.next_search).pack(side="right")
 
