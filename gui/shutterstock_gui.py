@@ -9,6 +9,7 @@ import urllib.request
 import getpass
 import os
 import math
+import threading
 
 ss_gui = None
 new_search_bool = True
@@ -67,7 +68,7 @@ class ShutterStockGUI:
 	def search(self, *args):
 		print(self.entry.get())
 		query = self.entry.get()
-		per_page = '2'
+		per_page = '12'
 		current_page='1'
 		url = "https://api.shutterstock.com/v2/images/search?query="
 		#api handling
@@ -85,23 +86,27 @@ class ShutterStockGUI:
 
 		def getPreview_1500(imageList, image):
 			return imageList[image]['assets']['preview_1500']['url']
-		
-		for i in range(len(imageList)):
-			col_count = 2
-			col = i % col_count
-			row = i / col_count
-			url = getPreview(imageList, i)
-			filename = directory+'/img'+str(i)+'.png';
-			print(filename)
+
+		def download_image(row, col, url, filename):
 			urllib.request.urlretrieve(url, filename)
 			image = Image.open(filename)
 			image = image.resize((390, 390), Image.ANTIALIAS)
 			photo = ImageTk.PhotoImage(image)
 			label = tk.Label(self.scrollable_frame, image=photo)
 			label.img = photo  # this line is not always needed, but include it anyway to prevent bugs
-			#label.grid(row=row, column=col)
+			label.grid(row=row, column=col)
 			search_res = SearchResult(filename)
 			label.bind("<Button-1>", lambda x: search_res.open_image())
+		
+		for i in range(len(imageList)):
+			col_count = 2
+			col = i % col_count
+			row = math.floor(i / col_count)
+			url = getPreview(imageList, i)
+			filename = directory+'/img'+str(i)+'.png';
+			print(filename)
+			t = threading.Thread(target=download_image, args=(row, col, url, filename))
+			t.start()
 
 	def clear_search_bar(self, *args):
 		global new_search_bool
