@@ -3,12 +3,11 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import ImageTk, Image
 import subprocess
-import requests
-import json
 import urllib.request
 import getpass
 import os
 import math
+import api_fncs
 
 ss_gui = None
 new_search_bool = True
@@ -66,25 +65,8 @@ class ShutterStockGUI:
 
 	def search(self, *args):
 		print(self.entry.get())
-		query = self.entry.get()
-		per_page = '2'
-		current_page='1'
-		url = "https://api.shutterstock.com/v2/images/search?query="
-		#api handling
-		headers = {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			'Authorization': 'Basic ZTYzSGxneHlXTFpVM3BtcXBqcVpWU0FLWUZhTW1OODQ6bThGTEZiUTJFdEw4cVdobg=='
-		}
-
-		# response is in JSON format
-		response = requests.request("GET", url+query + '&per_page=' + per_page + '&page=' + current_page, headers=headers)
-		imageList = json.loads(response.text)['data']
-
-		def getPreview(imageList, image):
-			return imageList[image]['assets']['preview']['url']
-
-		def getPreview_1500(imageList, image):
-			return imageList[image]['assets']['preview_1500']['url']
+		imageList = getImages(self.entry.get())
+		
 		
 		for i in range(len(imageList)):
 			col_count = 2
