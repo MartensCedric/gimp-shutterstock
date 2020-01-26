@@ -62,19 +62,12 @@ class ShutterStockGUI:
 		canvas.pack(side="left", fill=tk.BOTH, expand=True)
 		scrollbar.pack(side="right", fill="y")
 
-		tk.Button(master, text="Import to GIMP", command= lambda : open_image_gimp("conuhacks.png")).pack(side="top")
-		#tk.Button(master, image=PhotoImage(file=image)).pack(side="top")
-
-	def search(self, *args):
-		text_to_search = self.entry.get()
-		#print(text_to_search)
-
-		tk.Button(master, text="Import to GIMP", command=lambda: open_image_gimp("conuhacks.png")).pack(side="top")
+		tk.Button(self.master, text="Import to GIMP", command=lambda: open_image_gimp("conuhacks.png")).pack(side="top")
 
 	def search(self, *args):
 		print(self.entry.get())
 		query = self.entry.get()
-		per_page = '12'
+		per_page = '2'
 		current_page='1'
 		url = "https://api.shutterstock.com/v2/images/search?query="
 		#api handling
@@ -106,11 +99,9 @@ class ShutterStockGUI:
 			photo = ImageTk.PhotoImage(image)
 			label = tk.Label(self.scrollable_frame, image=photo)
 			label.img = photo  # this line is not always needed, but include it anyway to prevent bugs
-			label.grid(row=row, column=col)
+			#label.grid(row=row, column=col)
 			search_res = SearchResult(filename)
 			label.bind("<Button-1>", lambda x: search_res.open_image())
-
-
 
 	def clear_search_bar(self, *args):
 		global new_search_bool
