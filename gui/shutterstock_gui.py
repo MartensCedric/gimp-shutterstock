@@ -13,6 +13,7 @@ import threading
 
 ss_gui = None
 new_search_bool = True
+search_timer = None
 
 # make dir before downloading
 directory = '/home/' + getpass.getuser() + '/.gimp-2.8/plug-ins/gui/cache'
@@ -67,9 +68,26 @@ class ShutterStockGUI:
 
 	def search(self, *args):
 		print(self.entry.get())
+		global search_timer
+		if search_timer is not None:
+			search_timer.cancel()
+
 		query = self.entry.get()
+		if query == "":
+			return
+
+		def start_search():
+			# response is in JSON format
+			for child in self.scrollable_frame.winfo_children():
+				child.destroy()
+			t = threading.Thread(target=fetch_images, args=(per_page, current_page))
+			t.start()
+
+		search_timer = threading.Timer(0.5, start_search)
+		search_timer.start()
 		per_page = '12'
 		current_page='1'
+
 
 		def getPreview(imageList, image):
 			return imageList[image]['assets']['preview']['url']
@@ -108,10 +126,6 @@ class ShutterStockGUI:
 			label.grid(row=row, column=col)
 			search_res = SearchResult(filename)
 			label.bind("<Button-1>", lambda x: search_res.open_image())
-
-		# response is in JSON format
-		t = threading.Thread(target=fetch_images, args=(per_page, current_page))
-		t.start()
 
 	def clear_search_bar(self, *args):
 		global new_search_bool
