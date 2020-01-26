@@ -10,6 +10,7 @@ import getpass
 import os
 import math
 import threading
+
 from gui.ss_api import getPreview
 
 ss_gui = None
@@ -59,7 +60,7 @@ class ShutterStockGUI:
 		self.entry.bind("<Button-1>", self.clear_search_bar)
 		self.entry.pack(fill=tk.X)
 
-		string_to_search.trace("w", self.search)
+		string_to_search.trace("w", self.new_search)
 
 		canvas = tk.Canvas(container)
 		scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
@@ -78,6 +79,8 @@ class ShutterStockGUI:
 		scrollbar.pack(side="right", fill="y")
 
 		tk.Button(self.master, text="Import to GIMP", command=lambda: open_image_gimp("conuhacks.png")).pack(side="top")
+		tk.Button(self.master, text="Previous", command=self.previous_search).pack(side="left")
+		tk.Button(self.master, text="Next", command=self.next_search).pack(side="right")
 
 	def search_similar(self, image_link, *args):
 		self.entry.delete(0, END)
@@ -119,7 +122,20 @@ class ShutterStockGUI:
 		label.bind("<Button-3>", lambda event: search_res.pop_up(event))
 
 
-	def search(self, *args):
+	def new_search(self, *args):
+		self.current_page = 1
+		self.search(self)
+
+	def next_search(self, *args):
+		self.current_page = self.current_page + 1
+		self.search(self)
+
+	def previous_search(self, *args):
+		if self.current_page != 1:
+			self.current_page = self.current_page - 1
+			self.search(self)
+
+	def search(self, current_page, *args):
 		print(self.entry.get())
 		global search_timer
 		if search_timer is not None:
@@ -133,13 +149,12 @@ class ShutterStockGUI:
 			# response is in JSON format
 			for child in self.scrollable_frame.winfo_children():
 				child.destroy()
-			t = threading.Thread(target=fetch_images, args=(per_page, current_page))
+			t = threading.Thread(target=fetch_images, args=(per_page, str(self.current_page)))
 			t.start()
 
 		search_timer = threading.Timer(0.25, start_search)
 		search_timer.start()
 		per_page = '12'
-		current_page='1'
 
 		def fetch_images(per_page, current_page):
 			url = "https://api.shutterstock.com/v2/images/search?query="
