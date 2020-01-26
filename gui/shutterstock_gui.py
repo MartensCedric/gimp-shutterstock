@@ -10,6 +10,7 @@ import getpass
 import os
 import math
 import threading
+import webbrowser
 
 try:
 	from gui.ss_api import getPreview, getPreview_1500
@@ -41,11 +42,15 @@ class SearchResult():
 		print(self.image_1500_id)
 		urllib.request.urlretrieve(self.image_1500_id, directory + "/import.png")
 		open_image_gimp(directory + "/import.png")
-
+	def license_image(self, url):
+		url = "http://shutterstock.com"
+		webbrowser.open(url)
 	def pop_up(self, event):
 		popup = Menu(self.root, tearoff=0)
 		popup.add_command(label="Open Image in GIMP", command = lambda: self.open_image())
 		popup.add_command(label="Find Similar Images", command = lambda: ss_gui.search_similar(self.image_id))
+		popup.add_command(label="License Image", command = lambda: self.license_image("url"))
+
 		try:
 			popup.tk_popup(event.x_root, event.y_root, 0)
 		finally:
