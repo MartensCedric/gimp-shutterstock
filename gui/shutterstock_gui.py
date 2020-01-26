@@ -26,11 +26,26 @@ def open_image_gimp(path):
 	subprocess.Popen("gimp {}".format(path).split(), stdout=subprocess.PIPE).communicate()
 
 class SearchResult():
-	def __init__(self, path):
+	def __init__(self, path, root):
+		self.root = root
 		self.path = path
 
 	def open_image(self):
 		open_image_gimp(self.path)
+
+	def pop_up(self, event):
+		popup = Menu(self.root, tearoff=0)
+		popup.add_command(label=self.path)  # , command=next) etc...
+		popup.add_command(label="Previous")
+		popup.add_separator()
+		popup.add_command(label="Home")
+		# display the popup menu
+		try:
+			popup.tk_popup(event.x_root, event.y_root, 0)
+		finally:
+			# make sure to release the grab (Tk 8.0a1 only)
+			popup.grab_release()
+
 
 class ShutterStockGUI:
 	def __init__(self, master):
@@ -124,8 +139,9 @@ class ShutterStockGUI:
 			label = tk.Label(self.scrollable_frame, image=photo)
 			label.img = photo  # this line is not always needed, but include it anyway to prevent bugs
 			label.grid(row=row, column=col)
-			search_res = SearchResult(filename)
-			label.bind("<Button-1>", lambda x: search_res.open_image())
+			search_res = SearchResult(filename, label)
+			label.bind("<Button-1>", lambda event: search_res.open_image())
+			label.bind("<Button-3>", lambda event: search_res.pop_up(event))
 
 	def clear_search_bar(self, *args):
 		global new_search_bool
