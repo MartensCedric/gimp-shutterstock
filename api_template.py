@@ -15,3 +15,5 @@ url = "https://api.shutterstock.com/v2/images/search?query="
 # response is in JSON format
 response = requests.request("GET", url+query, headers=headers)
 print(response.text)
+
+#
