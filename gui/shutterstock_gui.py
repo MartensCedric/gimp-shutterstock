@@ -70,22 +70,33 @@ class ShutterStockGUI:
 		query = self.entry.get()
 		per_page = '12'
 		current_page='1'
-		url = "https://api.shutterstock.com/v2/images/search?query="
-		#api handling
-		headers = {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			'Authorization': 'Basic ZTYzSGxneHlXTFpVM3BtcXBqcVpWU0FLWUZhTW1OODQ6bThGTEZiUTJFdEw4cVdobg=='
-		}
-
-		# response is in JSON format
-		response = requests.request("GET", url+query + '&per_page=' + per_page + '&page=' + current_page, headers=headers)
-		imageList = json.loads(response.text)['data']
 
 		def getPreview(imageList, image):
 			return imageList[image]['assets']['preview']['url']
 
 		def getPreview_1500(imageList, image):
 			return imageList[image]['assets']['preview_1500']['url']
+
+		def fetch_images(per_page, current_page):
+			url = "https://api.shutterstock.com/v2/images/search?query="
+			# api handling
+			headers = {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'Authorization': 'Basic ZTYzSGxneHlXTFpVM3BtcXBqcVpWU0FLWUZhTW1OODQ6bThGTEZiUTJFdEw4cVdobg=='
+			}
+			response = requests.request("GET", url + query + '&per_page=' + per_page + '&page=' + current_page,
+										headers=headers)
+			imageList = json.loads(response.text)['data']
+
+			for i in range(len(imageList)):
+				col_count = 2
+				col = i % col_count
+				row = math.floor(i / col_count)
+				url = getPreview(imageList, i)
+				filename = directory + '/img' + str(i) + '.png';
+				print(filename)
+				t = threading.Thread(target=download_image, args=(row, col, url, filename))
+				t.start()
 
 		def download_image(row, col, url, filename):
 			urllib.request.urlretrieve(url, filename)
@@ -97,16 +108,10 @@ class ShutterStockGUI:
 			label.grid(row=row, column=col)
 			search_res = SearchResult(filename)
 			label.bind("<Button-1>", lambda x: search_res.open_image())
-		
-		for i in range(len(imageList)):
-			col_count = 2
-			col = i % col_count
-			row = math.floor(i / col_count)
-			url = getPreview(imageList, i)
-			filename = directory+'/img'+str(i)+'.png';
-			print(filename)
-			t = threading.Thread(target=download_image, args=(row, col, url, filename))
-			t.start()
+
+		# response is in JSON format
+		t = threading.Thread(target=fetch_images, args=(per_page, current_page))
+		t.start()
 
 	def clear_search_bar(self, *args):
 		global new_search_bool
