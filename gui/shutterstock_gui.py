@@ -4,7 +4,6 @@ from tkinter import ttk
 from PIL import ImageTk, Image
 import subprocess
 import requests
-import requests
 import json
 import urllib.request
 import getpass
