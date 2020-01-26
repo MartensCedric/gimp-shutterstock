@@ -12,9 +12,9 @@ import math
 import threading
 
 try:
-	from gui.ss_api import getPreview
+	from gui.ss_api import getPreview, getPreview_1500
 except:
-	from ss_api import getPreview
+	from ss_api import getPreview, getPreview_1500
 
 ss_gui = None
 new_search_bool = True
@@ -31,13 +31,16 @@ def open_image_gimp(path):
 	subprocess.Popen("gimp {}".format(path).split(), stdout=subprocess.PIPE).communicate()
 
 class SearchResult():
-	def __init__(self, path, root, image_id):
+	def __init__(self, path, root, image_id, image_1500_id):
 		self.root = root
 		self.path = path
 		self.image_id = image_id
+		self.image_1500_id = image_1500_id
 
 	def open_image(self):
-		open_image_gimp(self.path)
+		print(self.image_1500_id)
+		urllib.request.urlretrieve(self.image_1500_id, directory + "/import.png")
+		open_image_gimp(directory + "/import.png")
 
 	def pop_up(self, event):
 		popup = Menu(self.root, tearoff=0)
@@ -108,10 +111,10 @@ class ShutterStockGUI:
 			url = getPreview(data, i)
 			filename = directory + '/img' + str(i) + '.png';
 			print(filename)
-			t = threading.Thread(target=self.download_image, args=(row, col, url, filename, data[i]['id']))
+			t = threading.Thread(target=self.download_image, args=(row, col, url, filename, data[i]['id'], getPreview_1500(data, i)))
 			t.start()
 
-	def download_image(self, row, col, url, filename, image_link):
+	def download_image(self, row, col, url, filename, image_link, image_1500_link):
 		urllib.request.urlretrieve(url, filename)
 		image = Image.open(filename)
 		image = image.resize((390, image.height), Image.ANTIALIAS)
@@ -119,8 +122,7 @@ class ShutterStockGUI:
 		label = tk.Label(self.scrollable_frame, image=photo, borderwidth=2, relief="solid")
 		label.img = photo  # this line is not always needed, but include it anyway to prevent bugs
 		label.grid(row=row, column=col)
-		search_res = SearchResult(filename, label, image_link)
-		# label.bind("<Button-1>", lambda event: search_res.pop_up(event))
+		search_res = SearchResult(filename, label, image_link, image_1500_link)
 		label.bind("<Button-3>", lambda event: search_res.pop_up(event))
 
 
@@ -176,7 +178,7 @@ class ShutterStockGUI:
 				url = getPreview(imageList, i)
 				filename = directory + '/img' + str(i) + '.png';
 				print(filename)
-				t = threading.Thread(target=self.download_image, args=(row, col, url, filename, imageList[i]['id']))
+				t = threading.Thread(target=self.download_image, args=(row, col, url, filename, imageList[i]['id'], getPreview_1500(imageList, i)))
 				t.start()
 
 	def clear_search_bar(self, *args):
