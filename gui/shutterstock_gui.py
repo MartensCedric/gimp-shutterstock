@@ -4,19 +4,21 @@ from tkinter import ttk
 from PIL import ImageTk, Image
 import subprocess
 import requests
+import requests
 import json
 import urllib.request
 import getpass
 import os
-
+import math
 
 ss_gui = None
 new_search_bool = True
 
 # make dir before downloading
-directory = '~/.gimp-2.8/plug-ins/gui/cache'
+directory = '/home/' + getpass.getuser() + '/.gimp-2.8/plug-ins/gui/cache'
+
 if not os.path.exists(directory):
-	os.mkdir(directory)
+	os.makedirs(directory)
 
 def open_image_gimp(path):
 	ss_gui.master.destroy()
@@ -47,45 +49,26 @@ class ShutterStockGUI:
 
 		canvas = tk.Canvas(container)
 		scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
-		scrollable_frame = ttk.Frame(canvas)
+		self.scrollable_frame = ttk.Frame(canvas)
 
-		scrollable_frame.bind(
+		self.scrollable_frame.bind(
 			"<Configure>",
 			lambda e: canvas.configure(
 				scrollregion=canvas.bbox("all")
 			)
 		)
-		canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+		canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
 		canvas.configure(yscrollcommand=scrollbar.set)
-
-		for r in range(18):
-			for c in range(2):
-				image = Image.open('conuhacks.png')
-				image = image.resize((390, 390), Image.ANTIALIAS)
-				photo = ImageTk.PhotoImage(image)
-				label = tk.Label(scrollable_frame, image=photo)
-				label.img = photo  # this line is not always needed, but include it anyway to prevent bugs
-				label.grid(row=r, column=c)
-				search_res = SearchResult("conuhacks.png")
-				label.bind("<Button-1>", lambda x : search_res.open_image())
-
 		container.pack(fill=tk.BOTH, expand=True)
 		canvas.pack(side="left", fill=tk.BOTH, expand=True)
 		scrollbar.pack(side="right", fill="y")
 
-		tk.Button(master, text="Import to GIMP", command= lambda : open_image_gimp("conuhacks.png")).pack(side="top")
-		#tk.Button(master, image=PhotoImage(file=image)).pack(side="top")
+		tk.Button(self.master, text="Import to GIMP", command=lambda: open_image_gimp("conuhacks.png")).pack(side="top")
 
 	def search(self, *args):
-		text_to_search = self.entry.get()
-		#print(text_to_search)
-
-		tk.Button(master, text="Import to GIMP", command=lambda: open_image_gimp("conuhacks.png")).pack(side="top")
-
-	def search(self):
 		print(self.entry.get())
 		query = self.entry.get()
-		per_page = '12'
+		per_page = '2'
 		current_page='1'
 		url = "https://api.shutterstock.com/v2/images/search?query="
 		#api handling
@@ -104,14 +87,26 @@ class ShutterStockGUI:
 		def getPreview_1500(imageList, image):
 			return imageList[image]['assets']['preview_1500']['url']
 		
-		for img in range(len(imageList)):
-			url = getPreview(imageList, img)
-			urllib.request.urlretrieve(url, directory+'/img'+str(img)+'.jpg')
-
+		for i in range(len(imageList)):
+			col_count = 2
+			col = i % col_count
+			row = i / col_count
+			url = getPreview(imageList, i)
+			filename = directory+'/img'+str(i)+'.png';
+			print(filename)
+			urllib.request.urlretrieve(url, filename)
+			image = Image.open(filename)
+			image = image.resize((390, 390), Image.ANTIALIAS)
+			photo = ImageTk.PhotoImage(image)
+			label = tk.Label(self.scrollable_frame, image=photo)
+			label.img = photo  # this line is not always needed, but include it anyway to prevent bugs
+			#label.grid(row=row, column=col)
+			search_res = SearchResult(filename)
+			label.bind("<Button-1>", lambda x: search_res.open_image())
 
 	def clear_search_bar(self, *args):
 		global new_search_bool
-		if(new_search_bool):
+		if new_search_bool:
 			self.entry.delete(0, END)
 			new_search_bool = False
 
