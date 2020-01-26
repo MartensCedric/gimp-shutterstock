@@ -11,6 +11,8 @@ import os
 import math
 import threading
 
+from gui.ss_api import searchForSimilar
+
 ss_gui = None
 new_search_bool = True
 search_timer = None
@@ -26,9 +28,10 @@ def open_image_gimp(path):
 	subprocess.Popen("gimp {}".format(path).split(), stdout=subprocess.PIPE).communicate()
 
 class SearchResult():
-	def __init__(self, path, root):
+	def __init__(self, path, root, image_id):
 		self.root = root
 		self.path = path
+		self.image_id = image_id
 
 	def open_image(self):
 		open_image_gimp(self.path)
@@ -36,7 +39,7 @@ class SearchResult():
 	def pop_up(self, event):
 		popup = Menu(self.root, tearoff=0)
 		popup.add_command(label=self.path)
-		popup.add_command(label="Previous")
+		popup.add_command(label="Similar", command = lambda : ss_gui.search_similar(self.image_id))
 		popup.add_separator()
 		popup.add_command(label="Home")
 		# display the popup menu
@@ -85,6 +88,9 @@ class ShutterStockGUI:
 		for child in self.scrollable_frame.winfo_children():
 			child.destroy()
 
+		similars = searchForSimilar(image_link, 12, 1)
+		print(similars)
+
 	def search(self, *args):
 		print(self.entry.get())
 		global search_timer
@@ -102,7 +108,7 @@ class ShutterStockGUI:
 			t = threading.Thread(target=fetch_images, args=(per_page, current_page))
 			t.start()
 
-		search_timer = threading.Timer(0.5, start_search)
+		search_timer = threading.Timer(0.25, start_search)
 		search_timer.start()
 		per_page = '12'
 		current_page='1'
@@ -132,10 +138,10 @@ class ShutterStockGUI:
 				url = getPreview(imageList, i)
 				filename = directory + '/img' + str(i) + '.png';
 				print(filename)
-				t = threading.Thread(target=download_image, args=(row, col, url, filename))
+				t = threading.Thread(target=download_image, args=(row, col, url, filename, imageList[i]['id']))
 				t.start()
 
-		def download_image(row, col, url, filename):
+		def download_image(row, col, url, filename, image_link):
 			urllib.request.urlretrieve(url, filename)
 			image = Image.open(filename)
 			image = image.resize((390, 390), Image.ANTIALIAS)
@@ -143,7 +149,7 @@ class ShutterStockGUI:
 			label = tk.Label(self.scrollable_frame, image=photo)
 			label.img = photo  # this line is not always needed, but include it anyway to prevent bugs
 			label.grid(row=row, column=col)
-			search_res = SearchResult(filename, label)
+			search_res = SearchResult(filename, label, image_link)
 			label.bind("<Button-1>", lambda event: search_res.open_image())
 			label.bind("<Button-3>", lambda event: search_res.pop_up(event))
 
