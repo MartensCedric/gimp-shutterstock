@@ -38,11 +38,8 @@ class SearchResult():
 
 	def pop_up(self, event):
 		popup = Menu(self.root, tearoff=0)
-		popup.add_command(label=self.path)
-		popup.add_command(label="Similar", command = lambda : ss_gui.search_similar(self.image_id))
-		popup.add_separator()
-		popup.add_command(label="Home")
-		# display the popup menu
+		popup.add_command(label="Open Image in GIMP", command = lambda: self.open_image())
+		popup.add_command(label="Find Similar Images", command = lambda: ss_gui.search_similar(self.image_id))
 		try:
 			popup.tk_popup(event.x_root, event.y_root, 0)
 		finally:
@@ -144,13 +141,13 @@ class ShutterStockGUI:
 		def download_image(row, col, url, filename, image_link):
 			urllib.request.urlretrieve(url, filename)
 			image = Image.open(filename)
-			image = image.resize((390, 390), Image.ANTIALIAS)
+			image = image.resize((390, image.height), Image.ANTIALIAS)
 			photo = ImageTk.PhotoImage(image)
-			label = tk.Label(self.scrollable_frame, image=photo)
+			label = tk.Label(self.scrollable_frame, image=photo, borderwidth=2, relief="solid")
 			label.img = photo  # this line is not always needed, but include it anyway to prevent bugs
 			label.grid(row=row, column=col)
 			search_res = SearchResult(filename, label, image_link)
-			label.bind("<Button-1>", lambda event: search_res.open_image())
+			# label.bind("<Button-1>", lambda event: search_res.pop_up(event))
 			label.bind("<Button-3>", lambda event: search_res.pop_up(event))
 
 	def clear_search_bar(self, *args):
