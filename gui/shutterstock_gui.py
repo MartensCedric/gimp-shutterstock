@@ -89,7 +89,7 @@ class ShutterStockGUI:
 		for i in range(len(imageList)):
 			col_count = 2
 			col = i % col_count
-			row = i / col_count
+			row = math.floor(i / col_count)
 			url = getPreview(imageList, i)
 			filename = directory+'/img'+str(i)+'.png';
 			print(filename)
@@ -99,7 +99,7 @@ class ShutterStockGUI:
 			photo = ImageTk.PhotoImage(image)
 			label = tk.Label(self.scrollable_frame, image=photo)
 			label.img = photo  # this line is not always needed, but include it anyway to prevent bugs
-			#label.grid(row=row, column=col)
+			label.grid(row=row, column=col)
 			search_res = SearchResult(filename)
 			label.bind("<Button-1>", lambda x: search_res.open_image())
 
