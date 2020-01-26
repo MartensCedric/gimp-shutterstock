@@ -35,7 +35,7 @@ class SearchResult():
 
 	def pop_up(self, event):
 		popup = Menu(self.root, tearoff=0)
-		popup.add_command(label=self.path)  # , command=next) etc...
+		popup.add_command(label=self.path)
 		popup.add_command(label="Previous")
 		popup.add_separator()
 		popup.add_command(label="Home")
@@ -45,7 +45,6 @@ class SearchResult():
 		finally:
 			# make sure to release the grab (Tk 8.0a1 only)
 			popup.grab_release()
-
 
 class ShutterStockGUI:
 	def __init__(self, master):
@@ -80,6 +79,11 @@ class ShutterStockGUI:
 		scrollbar.pack(side="right", fill="y")
 
 		tk.Button(self.master, text="Import to GIMP", command=lambda: open_image_gimp("conuhacks.png")).pack(side="top")
+
+	def search_similar(self, image_link, *args):
+		self.entry.delete(0, END)
+		for child in self.scrollable_frame.winfo_children():
+			child.destroy()
 
 	def search(self, *args):
 		print(self.entry.get())
