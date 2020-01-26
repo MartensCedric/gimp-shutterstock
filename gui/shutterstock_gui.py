@@ -10,8 +10,7 @@ import getpass
 import os
 import math
 import threading
-
-from gui.ss_api import searchForSimilar
+from gui.ss_api import getPreview
 
 ss_gui = None
 new_search_bool = True
@@ -85,8 +84,40 @@ class ShutterStockGUI:
 		for child in self.scrollable_frame.winfo_children():
 			child.destroy()
 
-		similars = searchForSimilar(image_link, 12, 1)
-		print(similars)
+		t = threading.Thread(target=self.send_similar_req, args=(image_link, 12, 1))
+		t.start()
+
+	def send_similar_req(self, image_link, per_page, current_page):
+
+		url = "https://api.shutterstock.com/v2/cv/similar/images?view=full&per_page=" + str(per_page) + "&page=" + str(current_page) + "&asset_id=" + image_link
+
+		headers = {'Authorization': 'Basic ZTYzSGxneHlXTFpVM3BtcXBqcVpWU0FLWUZhTW1OODQ6bThGTEZiUTJFdEw4cVdobg=='}
+
+		response = requests.request("GET", url, headers=headers)
+		data = json.loads(response.text)['data']
+
+		for i in range(len(data)):
+			col_count = 2
+			col = i % col_count
+			row = math.floor(i / col_count)
+			url = getPreview(data, i)
+			filename = directory + '/img' + str(i) + '.png';
+			print(filename)
+			t = threading.Thread(target=self.download_image, args=(row, col, url, filename, data[i]['id']))
+			t.start()
+
+	def download_image(self, row, col, url, filename, image_link):
+		urllib.request.urlretrieve(url, filename)
+		image = Image.open(filename)
+		image = image.resize((390, image.height), Image.ANTIALIAS)
+		photo = ImageTk.PhotoImage(image)
+		label = tk.Label(self.scrollable_frame, image=photo, borderwidth=2, relief="solid")
+		label.img = photo  # this line is not always needed, but include it anyway to prevent bugs
+		label.grid(row=row, column=col)
+		search_res = SearchResult(filename, label, image_link)
+		# label.bind("<Button-1>", lambda event: search_res.pop_up(event))
+		label.bind("<Button-3>", lambda event: search_res.pop_up(event))
+
 
 	def search(self, *args):
 		print(self.entry.get())
@@ -110,13 +141,6 @@ class ShutterStockGUI:
 		per_page = '12'
 		current_page='1'
 
-
-		def getPreview(imageList, image):
-			return imageList[image]['assets']['preview']['url']
-
-		def getPreview_1500(imageList, image):
-			return imageList[image]['assets']['preview_1500']['url']
-
 		def fetch_images(per_page, current_page):
 			url = "https://api.shutterstock.com/v2/images/search?query="
 			# api handling
@@ -135,20 +159,8 @@ class ShutterStockGUI:
 				url = getPreview(imageList, i)
 				filename = directory + '/img' + str(i) + '.png';
 				print(filename)
-				t = threading.Thread(target=download_image, args=(row, col, url, filename, imageList[i]['id']))
+				t = threading.Thread(target=self.download_image, args=(row, col, url, filename, imageList[i]['id']))
 				t.start()
-
-		def download_image(row, col, url, filename, image_link):
-			urllib.request.urlretrieve(url, filename)
-			image = Image.open(filename)
-			image = image.resize((390, image.height), Image.ANTIALIAS)
-			photo = ImageTk.PhotoImage(image)
-			label = tk.Label(self.scrollable_frame, image=photo, borderwidth=2, relief="solid")
-			label.img = photo  # this line is not always needed, but include it anyway to prevent bugs
-			label.grid(row=row, column=col)
-			search_res = SearchResult(filename, label, image_link)
-			# label.bind("<Button-1>", lambda event: search_res.pop_up(event))
-			label.bind("<Button-3>", lambda event: search_res.pop_up(event))
 
 	def clear_search_bar(self, *args):
 		global new_search_bool
