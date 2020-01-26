@@ -3,11 +3,12 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import ImageTk, Image
 import subprocess
+import requests
+import json
 import urllib.request
 import getpass
 import os
 import math
-import api_fncs
 import threading
 
 ss_gui = None
@@ -86,18 +87,6 @@ class ShutterStockGUI:
 
 	def search(self, *args):
 		print(self.entry.get())
-<<<<<<< HEAD
-		imageList = getImages(self.entry.get())
-		
-		
-		for i in range(len(imageList)):
-			col_count = 2
-			col = i % col_count
-			row = i / col_count
-			url = getPreview(imageList, i)
-			filename = directory+'/img'+str(i)+'.png';
-			print(filename)
-=======
 		global search_timer
 		if search_timer is not None:
 			search_timer.cancel()
@@ -147,7 +136,6 @@ class ShutterStockGUI:
 				t.start()
 
 		def download_image(row, col, url, filename):
->>>>>>> cb25bc15c81e711da462e695af27c6059a2eb535
 			urllib.request.urlretrieve(url, filename)
 			image = Image.open(filename)
 			image = image.resize((390, 390), Image.ANTIALIAS)
